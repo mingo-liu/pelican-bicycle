@@ -170,6 +170,13 @@ footer { display: flex; justify-content: space-between; gap: 20px; padding-top: 
     <circle cx="723" cy="526" r="10"/>
     <circle cx="466" cy="526" r="26"/>
   </g>
+  <!-- Chain wraps the near-side sprockets, above the frame and behind the crank. -->
+  <circle cx="293" cy="526" r="16" fill="#afbbb0" stroke="#263e40" stroke-width="3"/>
+  <circle cx="293" cy="526" r="5" fill="#263e40"/>
+  <g stroke="#263e40" stroke-width="5">
+    <path id="chain-loop" d="M291.876 508.035L464.202 497.256A28.8 28.8 0 1 1 464.202 554.744L291.876 543.965A18 18 0 0 1 291.876 508.035Z" fill="none" stroke-linejoin="round"/>
+  </g>
+  <use id="chain-links" href="#chain-loop" stroke="#afbbb0" stroke-width="2" stroke-dasharray="3 4"/>
   <circle cx="466" cy="526" r="7" fill="#263e40"/>
   <g class="rider" transform="translate(0 -20)">
   <!-- Tail, body, and long curved neck -->
@@ -237,6 +244,7 @@ const rider = document.querySelector('.rider');
 const holdingWing = document.getElementById('holding-wing');
 const gripFold = document.getElementById('grip-fold');
 const wheels = [...document.querySelectorAll('.wheel')];
+const chainLinks = document.getElementById('chain-links');
 // Ground speed matches tire circumference; scenery uses depth-dependent parallax.
 const groundRate = 2 * Math.PI * 125 * 1.6 / 1800;
 const scenery = [
@@ -288,6 +296,7 @@ function render(time) {
     parts[`${side}-crank`].setAttribute('d', `M466 526L${x} ${y}`);
   }
   wheels.forEach(wheel => wheel.setAttribute('transform', `rotate(${time / 1800 * 360 * 1.6} ${wheel.getAttribute('cx')} 526)`));
+  chainLinks.setAttribute('stroke-dashoffset', -(time / 1800 * 2 * Math.PI * 28.8) % 7);
   parts.scarf.setAttribute('transform', `rotate(${Math.sin(angle * 2) * 3} 542 239)`);
   const blinkTime = time % 5100;
   const eyeScale = blinkTime > 4700 && blinkTime < 4900 ? 1 - .92 * Math.sin((blinkTime - 4700) / 200 * Math.PI) : 1;
